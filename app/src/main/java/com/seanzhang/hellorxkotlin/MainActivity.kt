@@ -3,10 +3,13 @@ package com.seanzhang.hellorxkotlin
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.internal.operators.observable.ObservableError
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toObservable
+import java.io.File
+import java.nio.charset.StandardCharsets.UTF_8
 
 
 class MainActivity : AppCompatActivity() {
@@ -17,8 +20,9 @@ class MainActivity : AppCompatActivity() {
 //        example()
 //        hello()
 //        starwar()
-        eps()
-        never()
+//        eps()
+//        never()
+        create()
     }
     fun empty() {
         exampleOf("emptyObs") {
@@ -95,6 +99,52 @@ class MainActivity : AppCompatActivity() {
                         onError =  { it.printStackTrace() },
                         onComplete = { println("Done!") }
                 )
+    }
+
+    fun create() {
+
+        exampleOf("create") {
+            val subscriptions = CompositeDisposable()
+            val droids = Observable.create<String> { emitter ->
+                emitter.onNext("R2-D2")
+                //emitter.onError(Droid.OU812())
+                emitter.onNext("C-3PO")
+                emitter.onNext("K-2SO")
+
+            }
+            val observer = droids.subscribeBy (
+                    onNext = { println(it) },
+                    onComplete = { println( "completed") },
+                    onError = { println("Error, $it") }
+            )
+
+            subscriptions.add(observer)
+        }
+
+        exampleOf("single") {
+            val subscriptions = CompositeDisposable()
+
+            fun loadText(filename: String): Single<String> {
+                return Single.create create@{ emitter ->
+                    val file = File(baseContext.filesDir,filename)
+                    val afile = applicationContext.filesDir
+                    println(afile)
+
+                    if (!file.exists()) {
+                        emitter.onError(FileReadError.FileNotFound())
+                        return@create
+                    }
+
+                    val contents = file.readText(UTF_8)
+                    emitter.onSuccess(contents)
+                }
+            }
+
+            val observer = loadText("ANewHope.txt")
+                    .subscribe( { println(it)}, {println("Error, $it")})
+
+            subscriptions.add(observer)
+        }
     }
 
 

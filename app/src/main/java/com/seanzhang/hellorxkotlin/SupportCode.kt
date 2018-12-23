@@ -17,3 +17,12 @@ const val episodeVI = "Return of the Jedi"
 const val episodeVII = "The Force Awakens"
 const val episodeVIII = "The Last Jedi"
 const val episodeIX = "Episode IX"
+
+sealed class Droid : Throwable() {
+    class OU812 : Droid()
+}
+
+sealed class FileReadError: Throwable() {
+    class FileNotFound : FileReadError()
+}
+
