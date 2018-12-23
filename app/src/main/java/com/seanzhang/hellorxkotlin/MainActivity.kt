@@ -3,6 +3,7 @@ package com.seanzhang.hellorxkotlin
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.internal.operators.observable.ObservableError
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toObservable
@@ -13,9 +14,60 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        example()
-        hello()
-        starwar()
+//        example()
+//        hello()
+//        starwar()
+        eps()
+        never()
+    }
+    fun empty() {
+        exampleOf("emptyObs") {
+            val observable = Observable.empty<Unit>()
+
+            observable.subscribeBy (
+                onNext = { println(it) },
+                onComplete = { println("Completed") }
+            )
+        }
+    }
+
+    fun never() {
+        exampleOf("never") {
+            val observable = Observable.never<Any>()
+
+
+            observable.subscribeBy (
+                    onNext = { println(it) },
+                    onComplete = { println("Completed") }
+            )
+        }
+
+        exampleOf("dispose") {
+            val mostPopular: Observable<String> = Observable.just(episodeV, episodeIV, episodeVI)
+
+            val subscription = mostPopular.subscribe {
+                println(it)
+            }
+
+            // until a stop event like error event occur
+            // to avoid leaking memory
+            subscription.dispose()
+        }
+
+        exampleOf("compositeDesposable") {
+            val subscriptions = CompositeDisposable()
+
+            subscriptions.add(listOf(episodeV, episodeIV, episodeVI).
+                                toObservable()
+                                .subscribe{ println(it) }
+            )
+        }
+    }
+
+    fun eps() {
+        val originalTrilogy = Observable.just(episodeIV, episodeV, episodeVI)
+
+        originalTrilogy.subscribeBy( onError = { println(it)}, onComplete = { println("completed")}, onNext = { println(it)})
     }
 
     fun starwar() {
