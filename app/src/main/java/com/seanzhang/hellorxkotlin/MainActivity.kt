@@ -183,6 +183,40 @@ class MainActivity : AppCompatActivity() {
             subscriptionTwo.dispose()
             subscriptionThree.dispose()
         }
+
+        exampleOf("skipWhile") {
+            val subscriptions = CompositeDisposable()
+
+            subscriptions.add(
+                    Observable.fromIterable(tomatometerRatings)
+                            .skipWhile { movie ->
+                                movie.rating < 90
+                            }
+                            .subscribe {
+                                println(it)
+                            })
+        }
+
+        exampleOf("skipUntil") {
+            val subscriptions =  CompositeDisposable()
+
+            val subject = PublishSubject.create<String>()
+            val trigger = PublishSubject.create<Unit>()
+
+            subscriptions.add(
+                    subject.skipUntil(trigger)
+                            .subscribe{
+                                println(it)
+                            })
+
+            subject.onNext(repisodeI.title)
+            subject.onNext(repisodeII.title)
+            subject.onNext(repisodeIII.title)
+
+            trigger.onNext(Unit)
+
+            subject.onNext(repisodeIV.title)
+        }
     }
 
 

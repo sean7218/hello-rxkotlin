@@ -37,6 +37,21 @@ const val theForceIsStrong = "The Force is strong with this one."
 const val mayTheForceBeWithYou = "May the Force be with you."
 const val mayThe4thBeWithYou = "May the 4th be with you."
 
+data class Movie(val title: String, val rating: Int)
+val repisodeI = Movie("The Phantom Menace", 55)
+val repisodeII = Movie("Attack of the Clones", 66)
+val repisodeIII = Movie("Revenge of the Sith", 79)
+val rrogueOne = Movie("Rogue One", 85)
+val repisodeIV = Movie("A New Hope", 93)
+val repisodeV = Movie("The Empire Strikes Back", 94)
+val repisodeVI = Movie("Return Of The Jedi", 80)
+val repisodeVII = Movie("The Force Awakens", 93)
+val repisodeVIII = Movie("The Last Jedi", 91)
+
+val tomatometerRatings = listOf(
+        repisodeI, repisodeII, repisodeIII, rrogueOne, repisodeIV, repisodeV, repisodeVI, repisodeVII, repisodeVIII)
+
+
 fun <T> printWithLabel(label: String, element: T?) {
     println("$label $element")
 }
